@@ -42,8 +42,8 @@ export class BrandService {
   }
 
   async update(id: number, brand) {
+    await this.exists(id);
     try{
-      await this.exists(id)
       return await this.prismaS.marca.update({
         data:{
           nome_Marca:brand
@@ -58,8 +58,8 @@ export class BrandService {
   }
 
   async remove(id: number) {
+    await this.exists(id);
     try{
-      await this.exists(id)
       return await this.prismaS.marca.delete({
         where:{
           id_Marca:id
