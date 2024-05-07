@@ -83,6 +83,6 @@ export class ModelService {
       }
     })
     if(!find)
-      throw new HttpException(`${id} does not exist`,HttpStatus.NOT_FOUND)
+      throw new HttpException(`${id} does not exist`,HttpStatus.NOT_FOUND);
   }
 }

@@ -1,26 +1,78 @@
-import { Injectable } from '@nestjs/common';
-import { CreateProductTypeDto } from './dto/create-product-type.dto';
-import { UpdateProductTypeDto } from './dto/update-product-type.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma-service';
 
 @Injectable()
 export class ProductTypeService {
-  create(createProductTypeDto: CreateProductTypeDto) {
-    return 'This action adds a new productType';
+  constructor (private readonly prismaS:PrismaService){}
+  
+  async create(productType) {
+    try{
+      return await this.prismaS.tipoproduto.create({
+        data:{
+          nome_Tipo:productType
+        }
+      })
+    }catch(error){
+      throw new HttpException('connection error',HttpStatus.SERVICE_UNAVAILABLE)
+    };
+  }
+  async findAll() {
+    try{
+      return await this.prismaS.tipoproduto.findMany();
+    }catch(error){
+      throw new HttpException('connection error',HttpStatus.SERVICE_UNAVAILABLE)
+    };
   }
 
-  findAll() {
-    return `This action returns all productType`;
+  async findOne(id: number) {
+    await this.exists(id);
+    try{
+      return await this.prismaS.tipoproduto.findFirst({
+        where:{
+          id_Tipo:id
+        }
+      }) 
+    }catch(error){
+      throw new HttpException('connection error',HttpStatus.SERVICE_UNAVAILABLE)
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} productType`;
+  async update(id: number, productType) {
+    await this.exists(id);
+    try{
+      return await this.prismaS.tipoproduto.update({
+        where:{
+          id_Tipo:id
+        },
+        data:{
+          nome_Tipo:productType
+        }
+      })
+    }catch(error){
+      throw new HttpException('connection error',HttpStatus.SERVICE_UNAVAILABLE)
+    }
   }
 
-  update(id: number, updateProductTypeDto: UpdateProductTypeDto) {
-    return `This action updates a #${id} productType`;
+  async remove(id: number) {
+    await this.exists(id);
+    try{
+      return await this.prismaS.tipoproduto.delete({
+        where:{
+          id_Tipo:id
+        }
+      })
+    }catch(error){
+      throw new HttpException('connection error',HttpStatus.SERVICE_UNAVAILABLE)
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} productType`;
+  async exists(id:number){
+    const find = await this.prismaS.tipoproduto.count({
+      where:{
+        id_Tipo:id
+      }
+    })
+    if(!find)
+      throw new HttpException(`${id} does not exist`,HttpStatus.NOT_FOUND);
   }
 }
