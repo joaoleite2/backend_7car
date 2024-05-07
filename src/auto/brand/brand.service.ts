@@ -60,6 +60,11 @@ export class BrandService {
   async remove(id: number) {
     await this.exists(id);
     try{
+      await this.prismaS.modelo.deleteMany({
+        where:{
+          id_Marca:id
+        }
+      })
       return await this.prismaS.marca.delete({
         where:{
           id_Marca:id
