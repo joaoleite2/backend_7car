@@ -1,26 +1,82 @@
-import { Injectable } from '@nestjs/common';
-import { CreateBrandDto } from './dto/create-brand.dto';
-import { UpdateBrandDto } from './dto/update-brand.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BrandDto } from './dto/brand.dto';
+import { PrismaService } from 'src/prisma/prisma-service';
 
 @Injectable()
 export class BrandService {
-  create(createBrandDto: CreateBrandDto) {
-    return 'This action adds a new brand';
+  constructor(
+    private readonly prismaS:PrismaService
+  ){}
+  
+  async create(brand) {
+    try{
+      return await this.prismaS.marca.create({
+        data:{
+          nome_Marca:brand
+        }
+      })
+    }catch(error){
+      throw new HttpException('error',HttpStatus.BAD_REQUEST);
+    }
   }
 
-  findAll() {
-    return `This action returns all brand`;
+  async findAll() {
+    try{
+      return await this.prismaS.marca.findMany();
+    }catch(error){
+      throw new HttpException('error',HttpStatus.NOT_FOUND);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} brand`;
+  async findOne(id: number) {
+    await this.exists(id);
+    try{
+      return await this.prismaS.marca.findFirst({
+        where:{
+          id_Marca:id
+        }
+      })
+    }catch(error){
+      throw new HttpException('error',HttpStatus.NO_CONTENT);
+    }
   }
 
-  update(id: number, updateBrandDto: UpdateBrandDto) {
-    return `This action updates a #${id} brand`;
+  async update(id: number, brand) {
+    try{
+      await this.exists(id)
+      return await this.prismaS.marca.update({
+        data:{
+          nome_Marca:brand
+        },
+        where:{
+          id_Marca:id
+        }
+      })
+    }catch(eror){
+      throw new HttpException('connection error', HttpStatus.BAD_REQUEST)
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} brand`;
+  async remove(id: number) {
+    try{
+      await this.exists(id)
+      return await this.prismaS.marca.delete({
+        where:{
+          id_Marca:id
+        }
+      })
+    }catch(error){
+      throw new HttpException('error',HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  async exists(id:number){
+    const find = await this.prismaS.marca.count({
+      where:{
+        id_Marca:id
+      }
+    })
+    if(!find)
+      throw new HttpException(`${id} does not exist`,HttpStatus.NOT_FOUND)
   }
 }

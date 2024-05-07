@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,4 +5,85 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model endereco {
+  id_End          Int     @id @default(autoincrement())
+  nome_End        String? @db.VarChar(100)
+  num_End         Int?
+  complemento_End String? @db.VarChar(50)
+}
+
+model itempedido {
+  id_Prod            Int
+  id_Ped             Int
+  qtn_Item           Int?
+  precoUnitario_Item Decimal? @db.Decimal(10, 2)
+  precoTotal_Item    Decimal? @db.Decimal(10, 2)
+
+  @@id([id_Prod, id_Ped])
+  @@index([id_Ped], map: "id_Ped")
+}
+
+model marca {
+  id_Marca   Int     @id @default(autoincrement())
+  nome_Marca String? @db.VarChar(50)
+}
+
+model modelo {
+  id_Modelo   Int     @id @default(autoincrement())
+  id_Marca    Int?
+  nome_Modelo String? @db.VarChar(50)
+
+  @@index([id_Marca], map: "id_Marca")
+}
+
+model pedido {
+  id_Ped      Int       @id @default(autoincrement())
+  id_Usu      Int?
+  data_Ped    DateTime? @db.DateTime(0)
+  valor_Total Decimal?  @db.Decimal(10, 2)
+
+  @@index([id_Usu], map: "id_Usu")
+}
+
+model produto {
+  id_Prod         Int      @id @default(autoincrement())
+  id_Marca        Int?
+  id_Modelo       Int?
+  id_Tipo         Int?
+  imagem_Prod     String?  @db.VarChar(30)
+  nome_Prod       String?  @db.VarChar(30)
+  desc_Prod       String?  @db.VarChar(100)
+  preco_Prod      Decimal? @db.Decimal(10, 2)
+  qtnEstoque_Prod Int?
+  img_Prod        String?  @db.VarChar(50)
+
+  @@index([id_Marca], map: "id_Marca")
+  @@index([id_Modelo], map: "id_Modelo")
+  @@index([id_Tipo], map: "id_Tipo")
+}
+
+model telefone {
+  id_Tel     Int     @id @default(autoincrement())
+  DDD        String? @db.Char(3)
+  numero_Tel String? @db.Char(11)
+}
+
+model tipoproduto {
+  id_Tipo   Int     @id @default(autoincrement())
+  nome_Tipo String? @db.VarChar(30)
+}
+
+model usuario {
+  id_Usu     Int      @id @default(autoincrement())
+  nome_Usu   String?  @db.VarChar(50)
+  email_Usu  String?  @db.VarChar(50)
+  senha_Usu  String?  @db.VarChar(50)
+  id_Tel     Int?
+  id_End     Int?
+  status_Usu Boolean?
+
+  @@index([id_End], map: "id_End")
+  @@index([id_Tel], map: "id_Tel")
 }
