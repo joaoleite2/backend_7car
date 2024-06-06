@@ -79,7 +79,7 @@ model usuario {
   id_Usu     Int      @id @default(autoincrement())
   nome_Usu   String?  @db.VarChar(50)
   email_Usu  String?  @db.VarChar(50)
-  senha_Usu  String?  @db.VarChar(50)
+  senha_Usu  String?  @db.VarChar(150)
   id_Tel     Int?
   id_End     Int?
   status_Usu Boolean?

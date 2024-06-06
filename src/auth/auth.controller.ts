@@ -6,5 +6,9 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-  
+
+  @Post()  
+  async signIN(@Body() body){
+    return await this.authService.validateUser(body.email,body.password)
+  }
 }
