@@ -26,25 +26,18 @@ model itempedido {
 }
 
 model marca {
-  id_Marca   Int     @id @default(autoincrement())
-  nome_Marca String? @db.VarChar(50)
+  id_Marca   Int       @id @default(autoincrement())
+  nome_Marca String?   @db.VarChar(50)
+  produtos   produto[] // Relacionamento com produtos
 }
 
 model modelo {
-  id_Modelo   Int     @id @default(autoincrement())
+  id_Modelo   Int       @id @default(autoincrement())
   id_Marca    Int?
-  nome_Modelo String? @db.VarChar(50)
+  nome_Modelo String?   @db.VarChar(50)
+  produtos    produto[] // Relacionamento com produtos
 
   @@index([id_Marca], map: "id_Marca")
-}
-
-model pedido {
-  id_Ped      Int       @id @default(autoincrement())
-  id_Usu      Int?
-  data_Ped    DateTime? @db.DateTime(0)
-  valor_Total Decimal?  @db.Decimal(10, 2)
-
-  @@index([id_Usu], map: "id_Usu")
 }
 
 model produto {
@@ -52,12 +45,14 @@ model produto {
   id_Marca        Int?
   id_Modelo       Int?
   id_Tipo         Int?
-  imagem_Prod     String?  @db.VarChar(30)
+  imagem_Prod     String?  @db.VarChar(120)
   nome_Prod       String?  @db.VarChar(30)
-  desc_Prod       String?  @db.VarChar(100)
+  desc_Prod       String?  @db.VarChar(1100)
   preco_Prod      Decimal? @db.Decimal(10, 2)
   qtnEstoque_Prod Int?
-  img_Prod        String?  @db.VarChar(50)
+
+  marca           marca?   @relation(fields: [id_Marca], references: [id_Marca])
+  modelo          modelo?  @relation(fields: [id_Modelo], references: [id_Modelo])
 
   @@index([id_Marca], map: "id_Marca")
   @@index([id_Modelo], map: "id_Modelo")

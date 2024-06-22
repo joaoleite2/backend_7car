@@ -24,7 +24,7 @@ export class UserController {
 
   @Patch(':id')
   async update(@Param('id',ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) {
-    return await this.userService.update(+id, updateUserDto);
+    await this.userService.update(+id, updateUserDto);
   }
 
   @Delete(':id')

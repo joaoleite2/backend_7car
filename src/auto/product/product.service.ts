@@ -32,12 +32,38 @@ export class ProductService {
 
   async findOne(id: number) {
     await this.thereAreProduct(id);
-    return await this.prismaS.produto.findFirst({
-      where:{
-        id_Prod:id
+    const findProduct =  await this.prismaS.produto.findFirst({
+      where: {
+        id_Prod: id
       }
     });
+    const findModel = await this.prismaS.modelo.findFirst({
+      where:{
+        id_Modelo:findProduct.id_Modelo
+      }
+    });
+    const findBrand = await this.prismaS.marca.findFirst({
+      where:{
+        id_Marca:findModel.id_Marca
+      },
+      select:{
+        nome_Marca:true
+      }
+    });
+    const jsonToFront = {
+      id_Prod: findProduct.id_Prod,
+      marca:findBrand.nome_Marca,
+      imagem_Prod: findProduct.imagem_Prod,
+      nome_Prod:findProduct.nome_Prod,
+      desc_Prod:findProduct.desc_Prod,
+      preco_Prod:findProduct.preco_Prod,
+      qtnEstoque_Prod:findProduct.qtnEstoque_Prod,
+      modelo:findModel.nome_Modelo
+    }
+    console.log(jsonToFront)
+    return jsonToFront;
   }
+  
 
   async update(id: number, updateProductDto: UpdateProductDto) {
     await this.thereAreProduct(id)

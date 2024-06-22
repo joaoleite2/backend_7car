@@ -40,11 +40,11 @@ export class UserService {
     });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, body) {
     await this.thereAreUser(id);
     let hashedPassword = null;
-    if(updateUserDto.password){
-      hashedPassword = await bcrypt.hash(updateUserDto.password,14);
+    if(body.senha_Usu){
+      hashedPassword = await bcrypt.hash(body.senha_Usu,14);
     }
 
     return await this.prismaS.usuario.update({
@@ -52,9 +52,9 @@ export class UserService {
         id_Usu:id
       },
       data:{
-        email_Usu:updateUserDto.userEmail,
-        nome_Usu:updateUserDto.userName,
-        senha_Usu: hashedPassword || updateUserDto.password
+        email_Usu:body.email_Usu,
+        nome_Usu:body.nome_Usu,
+        senha_Usu: hashedPassword || body.senha_Usu
       },
       select:{
         nome_Usu:true
