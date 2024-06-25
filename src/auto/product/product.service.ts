@@ -60,7 +60,6 @@ export class ProductService {
       qtnEstoque_Prod:findProduct.qtnEstoque_Prod,
       modelo:findModel.nome_Modelo
     }
-    console.log(jsonToFront)
     return jsonToFront;
   }
   
